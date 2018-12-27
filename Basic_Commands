@@ -1,0 +1,149 @@
+Getting Started with OpenShift for Developers:
+
+
+oc login: Log in to your OpenShift cluster and save the session token for subsequent use. You will be prompted for the user name and password or directed to a web console page where you can obtain a token you must then use to use to login from the command line. The web page will require you to first login in to the web console if you are not already logged in.
+
+oc login <server>: Log in to a specific OpenShift cluster. You will need to specify the name of the server as argument the first time you are using it, or if switching back to it after having used a different cluster.
+
+oc login --username <user>: Log in to your OpenShift cluster as a specific user.
+
+oc login --username <username> --password <password>: Log in to your OpenShift cluster as a specific user and supply the password on the command line. Note that this is not recommended for real systems as your password may be logged or retained in command history.
+
+oc login --token <token>: Log in to your server using a token for an existing session.
+
+oc logout: Log out of the active session by clearing the session token.
+
+oc whoami: Show the name of the user for the current login session.
+
+oc whoami --token: Show the token for the current login session.
+
+oc whoami --show-server: Show which OpenShift cluster you are logged into.
+
+oc whoami --show-context: Shows the context for the current session. This will include details about the project, server and name of user, in that order.
+
+oc config get-clusters: Show a list of all OpenShift clusters ever logged in to.
+
+oc config get-contexts: Show a list of contexts for all sessions ever created. For each context listed, this will include details about the project, server and name of user, in that order.
+
+oc adm policy add-role-to-user edit <username> -n <project>: Add another user to a project so that they can work within the project, including creating new deployments or deleting applications.
+
+oc adm policy add-role-to-user view <username> -n <project>: Add another user to a project but such that they can only view what is in the project.
+
+oc adm policy add-role-to-user admin <username> -n <project>: Add another user to a project such that they are effectively a joint owner of the project and have administration rights over it, including the ability to delete the project.
+
+
+Deploying Applications From Images:
+
+
+oc new-app <docker-image> --name <name>: Deploy an application from a Docker-formatted image found on an external image registry. If there is any ambiguity as to the source of the image, use the --docker-image option.
+
+oc new-app <image-stream> --name <name>: Deploy an application from a Docker-formatted image found in the internal image registry. If there is any ambiguity as to the source of the image, use the --image-stream option.
+
+oc import-image <docker-image> --confirm: Import a Docker-formatted image found on an external image registry, causing it to be pulled into the internal image registry.
+
+
+Deploying Applications From Source:
+
+
+oc start-build <name>: Trigger a new build and deployment of the application where source code is taken from the hosted Git repository specified to oc new-app when the build configuration was created.
+
+oc start-build <name> --from-dir=.: Trigger a new build and deployment of the application where source code is taken from the current working directory of the local machine where the oc command is being run.
+
+oc cancel-build <build>: Cancel a running build.
+
+oc logs bc/<name> --follow: Monitor the log output from the current build for the application.
+
+oc get builds: Display a list of all builds, completed, cancelled and running.
+
+oc get builds --watch: Monitor the progress of any active builds.
+
+oc get pods --watch: Monitor any activity related to pods in the project. This will include pods run to handle building and deployment of an application.
+
+
+Using the CLI to Manage Resource Objects:
+
+
+oc types: Shows an introduction to core OpenShift concepts and types.
+
+oc explain <setting-path>: Shows a description of the purpose of a specific resource object type setting.
+
+oc get: Shows a list of all the resource object types you can make queries about.
+
+oc get <type>: Shows summary details of all resource objects of a specific type.
+
+oc get <type> --selector app=<name>: Shows summary details of all resource objects of a type with the specified label.
+
+oc get <type/name>: Show summary details of a resource object.
+
+oc get <type/name> -o <json|yaml>: Shows raw details of a resource object type as JSON or YAML.
+
+oc get all: Shows summary details of the key resource objects in a project. The list of resource object types matched by all includes buildconfigs, builds, imagestreams, deploymentconfigs, replicationcontrollers, routes, services and pods.
+
+oc get all --selector app=<name>: Shows summary details of the key resource objects in a project with the specified label.
+
+oc describe <type/name>: Shows human readable long form description of a resource object.
+
+oc edit <type/name> -o <json|yaml>: Edit the raw details of a resource object type as JSON or YAML.
+
+oc export <type/name> -o <json|yaml>: Shows raw details of a resource object type as JSON or YAML where any settings not required when creating a resource object have been removed.
+
+oc create -f <definition.json>: Create a resource object from a definition stored in a file. The format of the definition must be JSON or YAML. The metadata.name field of the definition must not correspond to an existing resource object.
+
+oc replace -f <definition.json>: Replace the definition of a resource object with that stored in a file. The format of the definition must be JSON or YAML. The metadata.name field of the definition must correspond to an existing resource object.
+
+oc apply -f <definition.json>: Replace the definition of a resource object if it exists with that stored in a file. The format of the definition must be JSON or YAML. The metadata.name field of the definition must correspond to an existing resource object. If the resource object does not already exist, it will be created.
+
+oc patch <type/name> --patch <patch>: Update a resource object using a patch specification.
+
+oc label <type/name> <name=value>: Add a label to a resource object.
+
+oc label <type/name> <name->: Remove a label from a resource object.
+
+oc delete <type/name>: Delete a resource object.
+
+oc delete <type> --selector app=<name>: Delete all resource objects of a type with the specified label.
+
+oc delete <type> --all: Delete all resource objects of a specific type.
+
+oc delete all --all: Delete all key resource objects in a project. The list of resource object types matched by all includes buildconfigs, builds, imagestreams, deploymentconfigs, replicationcontrollers, routes, services and pods.
+
+oc delete all --selector app=<name>: Delete all key resource objects in a project with the specified label.
+
+
+Connecting to a Database Using Port Forwarding:
+
+
+oc rsh <pod-name>: Start an interactive shell in the specified pod.
+
+oc port-forward <pod-name> <local-port>:<remote-port>: Forward connections between your local machine and an application running in OpenShift. The remote port is the port the application running in OpenShift accepts connections. The local port is the port on your local machine you wish to make it available as, and to which any client application running on your local machine would connect to.
+
+oc port-forward <pod-name> :<remote-port>: Forward connections between your local machine and an application running in OpenShift. The remote port is the port the application running in OpenShift accepts connections. As a local port to use is not specified, a random local port is used, with the port number being displayed. Any client application running on your local machine would connect to the randomly assigned port.
+
+
+Transferring Files in and out of Containers:
+
+
+oc rsync <pod-name>:/remote/dir/filename ./local/dir: Copy a single file from the pod to the local directory.
+
+oc rsync <pod-name>:/remote/dir ./local/dir: Copy the directory from the pod to the local directory.
+
+oc rsync <pod-name>:/remote/dir/. ./local/dir: Copy the contents of the directory from the pod to the local directory.
+
+oc rsync <pod-name>:/remote/dir ./local/dir --delete: Copy the contents of the directory from the pod to the local directory. The --delete option ensures that the resulting directories will match exactly, with directories/files in the local directory which are not found in the pod being deleted.
+
+oc rsync ./local/dir <pod-name>:/remote/dir --no-perms: Copy the directory to the remote directory in the pod. The --no-perms option ensures that no attempt is made to transfer permissions, which can fail if remote directories are not owned by user container runs as.
+
+oc rsync ./local/dir <pod-name>:/remote/dir --exclude=* --include=<filename> --no-perms: Copy the single file to the remote directory in the pod. The --no-perms option ensures that no attempt is made to transfer permissions, which can fail if remote directories are not owned by user container runs as.
+
+oc rsync ./local/dir <pod-name>:/remote/dir --no-perms --watch: Copy the directory to the remote directory in the pod and then keep the remote directory syncrhonized with the local directory, with any changed files automatically being copied to the pod. The --no-perms option ensures that no attempt is made to transfer permissions, which can fail if remote directories are not owned by user container runs as. The --watch option is what enables the synchronization mechanism.
+
+oc run dummy --image centos/httpd-24-centos7: Run a dummy application pod which can be used to mount persistent volumes to facilitate copying files to a persistent volume.
+
+oc set volume dc/dummy --add --name=tmp-mount --claim-name=<claim-name> --type pvc --claim-size=1G --mount-path /mnt: Claim a persistent volume and mount it against a dummy application pod at the directory /mnt so files can be copied into the persistent volume using oc rsync.
+
+oc set volume dc/dummy --add --name=tmp-mount --claim-name=<claim-name> --mount-path /mnt: Mount an existing persistent volume against a dummy application pod at the directory /mnt so files can be copied into the persistent volume using oc rsync.
+
+oc rsync ./local/dir <pod-name>:/remote/dir --strategy=tar: Copy the directory to the remote directory in the pod. The --strategy=tar option indicates to use tar to copy the files rather than rsync.
+
+
+
