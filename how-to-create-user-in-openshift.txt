@@ -1,0 +1,32 @@
+If identity provider is HTPasswdPasswordIdentityProvider, then follow below steps:
+
+Run all below commands on master1 node of OpenShift using root account
+
+To create a flat file with a user name and hashed password, run:
+	
+	$ htpasswd -c /etc/origin/master/htpasswd <user_name>
+	
+Then, enter and confirm a clear-text password for the user. The command generates a hashed version of the password.
+
+For example:
+
+	htpasswd -c /etc/origin/master/htpasswd user1
+	New password:
+	Re-type new password:
+	Adding password for user user1
+	
+	
+You can include the -b option to supply the password on the command line:
+
+	$ htpasswd -c -b file user1 MyPassword!
+	Adding password for user user1
+
+Once user is created, then restart api and controller using below command:
+
+	$ master-restart api
+	$ master-restart controllers
+	
+If you get error that master-restart command not found, then run below commands:
+
+	$ /usr/local/bin/master-restart api
+	$ /usr/local/bin/master-restart controllers
