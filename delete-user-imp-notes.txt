@@ -1,0 +1,16 @@
+When you use HTPasswdPasswordIdentityProvider as identity provider in OpenShift, then there are some of the things that you should keep in mind when creating or deleting user:
+
+1. If you are using HA OpenShift cluster then replicate htpasswd file on all the master instances.
+2. If you are deleting a user using htpasswd utility then also delete the user in OpenShift cluster using below commands:
+
+	oc delete user <username>
+
+3. Above command will not delete user identity and it should be explicitly deleted so that when again a user is created with same username then its UID will not conflict.
+
+	To get the identity:
+	
+	oc get identites
+	
+	Look the deleted user identity and delete with below command:
+	
+	oc delete identity <identity_name>
